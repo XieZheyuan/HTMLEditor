@@ -8,18 +8,34 @@ from Ribbon import RibbonButton,RibbonWidget
 import editor
 from sys import argv
 
+HTML_FILTER="HTML Page(*.html *.htm *.shtml *.xhtml *.mht *.mhtml)"
+def opfile(fpath):
+    obj=open(fpath,'r')
+    txt=obj.read(
+    )
+    obj.close()
+    return txt
+def writefile(fpath,data):
+    obj=open(fpath,'w')
+    obj.write(data)
+    obj.close()
 class HTMLEditor(QtWidgets.QMainWindow):
     def __init__(self,parent=None):
         super(HTMLEditor, self).__init__(parent=parent)
         self.setWindowTitle("HTML Editor")
         self.setDockNestingEnabled(True)
-
+        self.fn=None
         #File Menu
-        self.newFile=QtWidgets.QAction(QtGui.QIcon("icons/new.ico"),"New",self)
-        self.openFile=QtWidgets.QAction(QtGui.QIcon("icons/open.ico"),"Open",self)
-        self.saveFile=QtWidgets.QAction(QtGui.QIcon("icons/save.ico"),"Save",self)
-        self.saveAsFile=QtWidgets.QAction(QtGui.QIcon("icons/saveas.ico"),"Save As",self)
+        self.newFileAction=QtWidgets.QAction(QtGui.QIcon("icons/new.ico"),"New",self)
+        self.bind(self.newFileAction,self.newFile)
+        self.openFileAction=QtWidgets.QAction(QtGui.QIcon("icons/open.ico"),"Open",self)
+        self.bind(self.openFileAction,self.openFile)
+        self.saveFileAction=QtWidgets.QAction(QtGui.QIcon("icons/save.ico"),"Save",self)
+        self.bind(self.saveFileAction,self.save)
+        self.saveAsFileAction=QtWidgets.QAction(QtGui.QIcon("icons/saveas.ico"),"Save As",self)
+        self.bind(self.saveFileAction,self.saveas)
         self.exitAction=QtWidgets.QAction(QtGui.QIcon("icons/exit.ico"),"Exit",self)
+        self.bind(self.exitAction,self.quit)
 
         #Insert Inline Menu
         self.insertBold=QtWidgets.QAction(QtGui.QIcon("icons/bold.ico"),"Bold",self)
@@ -36,7 +52,8 @@ class HTMLEditor(QtWidgets.QMainWindow):
         self.insertCodeElement.triggered.connect(self.insertSomething("<code>...</code>"))
         self.insertLink=QtWidgets.QAction(QtGui.QIcon("icons/link.ico"),"Hyperlink",self)
         self.insertLink.triggered.connect(self.insertLink_action)
-
+        self.insertParagraph=QtWidgets.QAction(QtGui.QIcon("icons/Paragraph.ico"),"Paragraph",self)
+        self.bind(self.insertParagraph,self.insertSomething("<p>...</p>"))
         #Insert Block Menu
         self.insertDiv=QtWidgets.QAction(QtGui.QIcon("icons/div.ico"),"Div Element",self)
         self.insertDiv.triggered.connect(self.insertSomething("<div>...</div>"))
@@ -49,15 +66,21 @@ class HTMLEditor(QtWidgets.QMainWindow):
         self.insertOl=QtWidgets.QAction(QtGui.QIcon("icons/ol.ico"),"Ordered",self)
         self.bind(self.insertOl,self.add_const("<ol>\n\n</ol>"))
         self.insertUl=QtWidgets.QAction(QtGui.QIcon("icons/ul.ico"),"Disordered",self)
-        self.bind(self.insertUl,self.add_const("<ul>\n</ul>"))
+        self.bind(self.insertUl,self.add_const("<ul>\n\n</ul>"))
         self.insertListItem=QtWidgets.QAction(QtGui.QIcon("icons/list-item.ico"),"Item",self)
         self.bind(self.insertListItem,self.insertSomething("<li>...</li>\n"))
         self.insertTable=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),"Normal",self)
+        self.bind(self.insertTable,self.add_const("<table border>\n\n</table>"))
         self.insertTableWithoutBroder=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),"No border",self)
+        self.bind(self.insertTableWithoutBroder,self.add_const("<table>\n\n</table>"))
         self.insertTableLine=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),"Line",self)
+        self.bind(self.insertTableLine,self.add_const("<tr>\t</tr>"))
         self.insertTableCeil=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),"Ceil",self)
+        self.bind(self.insertTableCeil,self.insertSomething("<td>...</td>"))
         self.insertPreCode=QtWidgets.QAction(QtGui.QIcon("icons/code.ico"),"PRE Code",self)
+        self.bind(self.insertPreCode,self.add_const("<pre>\n\n</pre>"))
         self.insertAddress=QtWidgets.QAction(QtGui.QIcon("icons/url.ico"),"Address",self)
+        self.bind(self.insertAddress,self.insertSomething("<address>...</address>"))
 
         self._ribbon=RibbonWidget.RibbonWidget(self)
         self.addToolBar(self._ribbon)
@@ -67,10 +90,10 @@ class HTMLEditor(QtWidgets.QMainWindow):
     def init_ribbon(self):
         file_tab=self._ribbon.add_ribbon_tab("Start")
         file_pane=file_tab.add_ribbon_pane("File")
-        file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.newFile,True))
-        file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.openFile,True))
-        file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.saveFile,True))
-        file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.saveAsFile,True))
+        file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.newFileAction,True))
+        file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.openFileAction,True))
+        file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.saveFileAction,True))
+        file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.saveAsFileAction,True))
         file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.exitAction,True))
         insert_inline_tab=self._ribbon.add_ribbon_tab("Inline")
         text_pane=insert_inline_tab.add_ribbon_pane("Text")
@@ -81,6 +104,7 @@ class HTMLEditor(QtWidgets.QMainWindow):
         text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertSpan,True))
         text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertCodeElement,True))
         text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertLink,True))
+        text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertParagraph,True))
         insert_block_tab=self._ribbon.add_ribbon_tab("Block")
         separating_pane=insert_block_tab.add_ribbon_pane("Separating elements")
         separating_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertDiv,True))
@@ -128,6 +152,42 @@ class HTMLEditor(QtWidgets.QMainWindow):
         return foo
     def bind(self,action:QtWidgets.QAction,futc):
         action.triggered.connect(futc)
+    def newFile(self):
+        self.editor.clear()
+        self.fn=None
+        self.upgradeFN()
+    def openFile(self):
+        fpath=QtWidgets.QFileDialog.getOpenFileName(self,"Open the HTML File",filter=HTML_FILTER)[0]
+        if fpath == "" or fpath == None:
+            return False
+        txt=opfile(fpath)
+        print(txt)
+        self.editor.clear()
+        self.editor.setText(txt)
+        self.fn=fpath
+        self.upgradeFN()
+    def save(self):
+        if self.fn == None:
+            fn=QtWidgets.QFileDialog.getSaveFileName(self,"Save to HTML",filter=HTML_FILTER)[0]
+            if fn == "" or fn == None:
+                return False
+            writefile(fn,self.editor.text())
+            self.fn=fn
+        else:
+            writefile(self.fn,self.editor.text())
+    def saveas(self):
+        fn = QtWidgets.QFileDialog.getSaveFileName(self, "Save to HTML", filter=HTML_FILTER)[0]
+        if fn == "" or fn == None:
+            return False
+        writefile(fn, self.editor.text())
+        self.upgradeFN()
+    def quit(self):
+        self.close()
+        exit(0)
+    def upgradeFN(self):
+        if self.fn == None:
+            self.setWindowTitle("HTMLEditor")
+        self.setWindowTitle("%s-HTMLEditor"%self.fn)
 if __name__ == "__main__":
     app=QtWidgets.QApplication(argv)
     win=HTMLEditor()
