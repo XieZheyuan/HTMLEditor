@@ -5,9 +5,9 @@ COPYRIGHT (C) XIE ZHEYUAN
 __author__ = 'Xie Zheyuan'
 from PyQt5 import QtCore,QtGui,QtWidgets
 from Ribbon import RibbonButton,RibbonWidget
-import editor
+import editor,il8nlib
 from sys import argv
-
+i=il8nlib.Il8n()
 HTML_FILTER="HTML Page(*.html *.htm *.shtml *.xhtml *.mht *.mhtml)"
 def opfile(fpath):
     obj=open(fpath,'r')
@@ -22,46 +22,46 @@ def writefile(fpath,data):
 class HTMLEditor(QtWidgets.QMainWindow):
     def __init__(self,parent=None):
         super(HTMLEditor, self).__init__(parent=parent)
-        self.setWindowTitle("HTML Editor")
+        self.setWindowTitle(i._("title"))
         self.setDockNestingEnabled(True)
         self.fn=None
         #File Menu
-        self.newFileAction=QtWidgets.QAction(QtGui.QIcon("icons/new.ico"),"New",self)
+        self.newFileAction=QtWidgets.QAction(QtGui.QIcon("icons/new.ico"),i._("newFileActionName"),self)
         self.bind(self.newFileAction,self.newFile)
-        self.openFileAction=QtWidgets.QAction(QtGui.QIcon("icons/open.ico"),"Open",self)
+        self.openFileAction=QtWidgets.QAction(QtGui.QIcon("icons/open.ico"),i._("openFileActionName"),self)
         self.bind(self.openFileAction,self.openFile)
-        self.saveFileAction=QtWidgets.QAction(QtGui.QIcon("icons/save.ico"),"Save",self)
+        self.saveFileAction=QtWidgets.QAction(QtGui.QIcon("icons/save.ico"),i._("saveFileActionName"),self)
         self.bind(self.saveFileAction,self.save)
-        self.saveAsFileAction=QtWidgets.QAction(QtGui.QIcon("icons/saveas.ico"),"Save As",self)
+        self.saveAsFileAction=QtWidgets.QAction(QtGui.QIcon("icons/saveas.ico"),i._("saveasFileAction"),self)
         self.bind(self.saveFileAction,self.saveas)
-        self.exitAction=QtWidgets.QAction(QtGui.QIcon("icons/exit.ico"),"Exit",self)
+        self.exitAction=QtWidgets.QAction(QtGui.QIcon("icons/exit.ico"),i._("exitAction"),self)
         self.bind(self.exitAction,self.quit)
 
         #Insert Inline Menu
-        self.insertBold=QtWidgets.QAction(QtGui.QIcon("icons/bold.ico"),"Bold",self)
+        self.insertBold=QtWidgets.QAction(QtGui.QIcon("icons/bold.ico"),i._("makeBoldActionName"),self)
         self.insertBold.triggered.connect(self.insertSomething("<b>...</b>"))
-        self.insertItalic=QtWidgets.QAction(QtGui.QIcon("icons/italic.ico"),"Italic",self)
+        self.insertItalic=QtWidgets.QAction(QtGui.QIcon("icons/italic.ico"),i._("makeItalicActionName"),self)
         self.insertItalic.triggered.connect(self.insertSomething("<i>...</i>"))
-        self.insertUnderline=QtWidgets.QAction(QtGui.QIcon("icons/underline.ico"),"Underline",self)
+        self.insertUnderline=QtWidgets.QAction(QtGui.QIcon("icons/underline.ico"),i._("makeUnderlineActionName"),self)
         self.insertUnderline.triggered.connect(self.insertSomething("<u>...</u>"))
-        self.insertDeleteline=QtWidgets.QAction(QtGui.QIcon("icons/deleteline.ico"),"DeleteLine",self)
+        self.insertDeleteline=QtWidgets.QAction(QtGui.QIcon("icons/deleteline.ico"),i._("makeDeleteLineActionName"),self)
         self.insertDeleteline.triggered.connect(self.insertSomething("<del>...</del>"))
-        self.insertSpan=QtWidgets.QAction(QtGui.QIcon("icons/span.ico"),"Span Element",self)
+        self.insertSpan=QtWidgets.QAction(QtGui.QIcon("icons/span.ico"),i._("addSpanActionName"),self)
         self.insertSpan.triggered.connect(self.insertSomething("<span>...</span>"))
-        self.insertCodeElement=QtWidgets.QAction(QtGui.QIcon("icons/code.ico"),"Code Element",self)
+        self.insertCodeElement=QtWidgets.QAction(QtGui.QIcon("icons/code.ico"),i._("addCodeElementActionName"),self)
         self.insertCodeElement.triggered.connect(self.insertSomething("<code>...</code>"))
-        self.insertLink=QtWidgets.QAction(QtGui.QIcon("icons/link.ico"),"Hyperlink",self)
+        self.insertLink=QtWidgets.QAction(QtGui.QIcon("icons/link.ico"),i._("addHyperlinkElement"),self)
         self.insertLink.triggered.connect(self.insertLink_action)
-        self.insertParagraph=QtWidgets.QAction(QtGui.QIcon("icons/Paragraph.ico"),"Paragraph",self)
+        self.insertParagraph=QtWidgets.QAction(QtGui.QIcon("icons/Paragraph.ico"),i._("makeParagraphActionElement"),self)
         self.bind(self.insertParagraph,self.insertSomething("<p>...</p>"))
         #Insert Block Menu
-        self.insertDiv=QtWidgets.QAction(QtGui.QIcon("icons/div.ico"),"Div Element",self)
+        self.insertDiv=QtWidgets.QAction(QtGui.QIcon("icons/div.ico"),i._("makeDivActionName"),self)
         self.insertDiv.triggered.connect(self.insertSomething("<div>...</div>"))
 
-        self.insertLine=QtWidgets.QAction(QtGui.QIcon("icons/hr.ico"),"Horizon",self)
+        self.insertLine=QtWidgets.QAction(QtGui.QIcon("icons/hr.ico"),i._("AddLineActionName"),self)
         self.insertLine.triggered.connect(self.add_const())
 
-        self.insertNextLine=QtWidgets.QAction(QtGui.QIcon("icons/nextline.ico"),"Line breaks",self)
+        self.insertNextLine=QtWidgets.QAction(QtGui.QIcon("icons/nextline.ico"),i._("NewLineAction"),self)
         self.insertNextLine.triggered.connect(self.add_const("<br />"))
         self.insertOl=QtWidgets.QAction(QtGui.QIcon("icons/ol.ico"),"Ordered",self)
         self.bind(self.insertOl,self.add_const("<ol>\n\n</ol>"))
@@ -88,15 +88,15 @@ class HTMLEditor(QtWidgets.QMainWindow):
         self.editor=editor.CodeWidget()
         self.setCentralWidget(self.editor)
     def init_ribbon(self):
-        file_tab=self._ribbon.add_ribbon_tab("Start")
-        file_pane=file_tab.add_ribbon_pane("File")
+        file_tab=self._ribbon.add_ribbon_tab(i._("startMenuName"))
+        file_pane=file_tab.add_ribbon_pane(i._("filePaneName"))
         file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.newFileAction,True))
         file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.openFileAction,True))
         file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.saveFileAction,True))
         file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.saveAsFileAction,True))
         file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.exitAction,True))
-        insert_inline_tab=self._ribbon.add_ribbon_tab("Inline")
-        text_pane=insert_inline_tab.add_ribbon_pane("Text")
+        insert_inline_tab=self._ribbon.add_ribbon_tab(i._("inlineMenuName"))
+        text_pane=insert_inline_tab.add_ribbon_pane(i._("inlineTextPaneName"))
         text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertBold,True))
         text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertItalic,True))
         text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertUnderline,True))
@@ -104,9 +104,11 @@ class HTMLEditor(QtWidgets.QMainWindow):
         text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertSpan,True))
         text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertCodeElement,True))
         text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertLink,True))
-        text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertParagraph,True))
-        insert_block_tab=self._ribbon.add_ribbon_tab("Block")
-        separating_pane=insert_block_tab.add_ribbon_pane("Separating elements")
+        # text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertParagraph,True))
+        insert_block_tab=self._ribbon.add_ribbon_tab(i._("blockMenuName"))
+        # block_text_pane=insert_block_tab.add_ribbon_pane("Block Text")
+        # block_text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertParagraph,True))
+        separating_pane=insert_block_tab.add_ribbon_pane(i._("Separating"))
         separating_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertDiv,True))
         separating_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertLine,True))
         separating_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertNextLine,True))
@@ -122,6 +124,7 @@ class HTMLEditor(QtWidgets.QMainWindow):
         muti_text_pane=insert_block_tab.add_ribbon_pane("Block Text")
         muti_text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertPreCode,True))
         muti_text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertAddress,True))
+        muti_text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertParagraph,True))
     def insertSomething(self,sth):
         def foo():
             sth2=QtWidgets.QInputDialog.getText(self,"HTML Editor","Input An Label:",text="...")
