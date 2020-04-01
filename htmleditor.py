@@ -7,6 +7,7 @@ from PyQt5 import QtCore,QtGui,QtWidgets
 from Ribbon import RibbonButton,RibbonWidget
 import editor,il8nlib
 from sys import argv
+import configobj
 i=il8nlib.Il8n()
 HTML_FILTER="HTML Page(*.html *.htm *.shtml *.xhtml *.mht *.mhtml)"
 def opfile(fpath):
@@ -63,23 +64,23 @@ class HTMLEditor(QtWidgets.QMainWindow):
 
         self.insertNextLine=QtWidgets.QAction(QtGui.QIcon("icons/nextline.ico"),i._("NewLineAction"),self)
         self.insertNextLine.triggered.connect(self.add_const("<br />"))
-        self.insertOl=QtWidgets.QAction(QtGui.QIcon("icons/ol.ico"),"Ordered",self)
+        self.insertOl=QtWidgets.QAction(QtGui.QIcon("icons/ol.ico"),i._("OrderListAction"),self)
         self.bind(self.insertOl,self.add_const("<ol>\n\n</ol>"))
-        self.insertUl=QtWidgets.QAction(QtGui.QIcon("icons/ul.ico"),"Disordered",self)
+        self.insertUl=QtWidgets.QAction(QtGui.QIcon("icons/ul.ico"),i._("DisorderedListAction"),self)
         self.bind(self.insertUl,self.add_const("<ul>\n\n</ul>"))
-        self.insertListItem=QtWidgets.QAction(QtGui.QIcon("icons/list-item.ico"),"Item",self)
+        self.insertListItem=QtWidgets.QAction(QtGui.QIcon("icons/list-item.ico"),i._("ListItemAction"),self)
         self.bind(self.insertListItem,self.insertSomething("<li>...</li>\n"))
-        self.insertTable=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),"Normal",self)
+        self.insertTable=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),i._("insertNormalTable"),self)
         self.bind(self.insertTable,self.add_const("<table border>\n\n</table>"))
-        self.insertTableWithoutBroder=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),"No border",self)
+        self.insertTableWithoutBroder=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),i._("insertNoBroderTable"),self)
         self.bind(self.insertTableWithoutBroder,self.add_const("<table>\n\n</table>"))
-        self.insertTableLine=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),"Line",self)
+        self.insertTableLine=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),i._("insertTableLine"),self)
         self.bind(self.insertTableLine,self.add_const("<tr>\t</tr>"))
-        self.insertTableCeil=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),"Ceil",self)
+        self.insertTableCeil=QtWidgets.QAction(QtGui.QIcon("icons/table.ico"),i._("insertTableCeil"),self)
         self.bind(self.insertTableCeil,self.insertSomething("<td>...</td>"))
-        self.insertPreCode=QtWidgets.QAction(QtGui.QIcon("icons/code.ico"),"PRE Code",self)
+        self.insertPreCode=QtWidgets.QAction(QtGui.QIcon("icons/code.ico"),i._("insertPreCode"),self)
         self.bind(self.insertPreCode,self.add_const("<pre>\n\n</pre>"))
-        self.insertAddress=QtWidgets.QAction(QtGui.QIcon("icons/url.ico"),"Address",self)
+        self.insertAddress=QtWidgets.QAction(QtGui.QIcon("icons/url.ico"),i._("insertAddressAction"),self)
         self.bind(self.insertAddress,self.insertSomething("<address>...</address>"))
 
         self._ribbon=RibbonWidget.RibbonWidget(self)
@@ -88,6 +89,7 @@ class HTMLEditor(QtWidgets.QMainWindow):
         self.editor=editor.CodeWidget()
         self.setCentralWidget(self.editor)
     def init_ribbon(self):
+        # self.loadTranslate()
         file_tab=self._ribbon.add_ribbon_tab(i._("startMenuName"))
         file_pane=file_tab.add_ribbon_pane(i._("filePaneName"))
         file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.newFileAction,True))
@@ -95,6 +97,7 @@ class HTMLEditor(QtWidgets.QMainWindow):
         file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.saveFileAction,True))
         file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.saveAsFileAction,True))
         file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.exitAction,True))
+        # file_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.il8n,True))
         insert_inline_tab=self._ribbon.add_ribbon_tab(i._("inlineMenuName"))
         text_pane=insert_inline_tab.add_ribbon_pane(i._("inlineTextPaneName"))
         text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertBold,True))
@@ -112,22 +115,23 @@ class HTMLEditor(QtWidgets.QMainWindow):
         separating_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertDiv,True))
         separating_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertLine,True))
         separating_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertNextLine,True))
-        list_pane=insert_block_tab.add_ribbon_pane("List")
+        list_pane=insert_block_tab.add_ribbon_pane(i._("ListPaneName"))
         list_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertOl,True))
         list_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertUl,True))
         list_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertListItem,True))
-        table_pane=insert_block_tab.add_ribbon_pane("Table")
+        table_pane=insert_block_tab.add_ribbon_pane(i._("tablePaneName"))
         table_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertTable,True))
         table_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertTableWithoutBroder,True))
         table_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertTableLine,True))
         table_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertTableCeil,True))
-        muti_text_pane=insert_block_tab.add_ribbon_pane("Block Text")
+        muti_text_pane=insert_block_tab.add_ribbon_pane(i._("blockTextPane"))
         muti_text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertPreCode,True))
         muti_text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertAddress,True))
         muti_text_pane.add_ribbon_widget(RibbonButton.RibbonButton(self,self.insertParagraph,True))
+
     def insertSomething(self,sth):
         def foo():
-            sth2=QtWidgets.QInputDialog.getText(self,"HTML Editor","Input An Label:",text="...")
+            sth2=QtWidgets.QInputDialog.getText(self,i._("title"),i._("inputLabelMsg"),text="...")
             if sth2[1] != True:
                 return
             else:
@@ -137,12 +141,12 @@ class HTMLEditor(QtWidgets.QMainWindow):
             self.editor.insert(sth3)
         return foo
     def insertLink_action(self):
-        url=QtWidgets.QInputDialog.getText(self,"HTML Editor","Input the Hyperlink URL",text="about:blank")
+        url=QtWidgets.QInputDialog.getText(self,i._("title"),i._("inputHyperlinkURL"),text="about:blank")
         if url[1] != True:
             return
         else:
             url=url[0]
-        text=QtWidgets.QInputDialog.getText(self,"HTML Editor","Input the Hyperlink Show Text",text="...")
+        text=QtWidgets.QInputDialog.getText(self,i._("title"),i._("inputLabelMsg"),text="...")
         if text[1] != True:
             return
         else:
@@ -160,7 +164,7 @@ class HTMLEditor(QtWidgets.QMainWindow):
         self.fn=None
         self.upgradeFN()
     def openFile(self):
-        fpath=QtWidgets.QFileDialog.getOpenFileName(self,"Open the HTML File",filter=HTML_FILTER)[0]
+        fpath=QtWidgets.QFileDialog.getOpenFileName(self,i._("OpenFileTitle"),filter=HTML_FILTER)[0]
         if fpath == "" or fpath == None:
             return False
         txt=opfile(fpath)
@@ -171,7 +175,7 @@ class HTMLEditor(QtWidgets.QMainWindow):
         self.upgradeFN()
     def save(self):
         if self.fn == None:
-            fn=QtWidgets.QFileDialog.getSaveFileName(self,"Save to HTML",filter=HTML_FILTER)[0]
+            fn=QtWidgets.QFileDialog.getSaveFileName(self,i._("SaveFileTitle"),filter=HTML_FILTER)[0]
             if fn == "" or fn == None:
                 return False
             writefile(fn,self.editor.text())
@@ -179,7 +183,7 @@ class HTMLEditor(QtWidgets.QMainWindow):
         else:
             writefile(self.fn,self.editor.text())
     def saveas(self):
-        fn = QtWidgets.QFileDialog.getSaveFileName(self, "Save to HTML", filter=HTML_FILTER)[0]
+        fn = QtWidgets.QFileDialog.getSaveFileName(self, i._("SaveFileTitle"), filter=HTML_FILTER)[0]
         if fn == "" or fn == None:
             return False
         writefile(fn, self.editor.text())
@@ -191,6 +195,26 @@ class HTMLEditor(QtWidgets.QMainWindow):
         if self.fn == None:
             self.setWindowTitle("HTMLEditor")
         self.setWindowTitle("%s-HTMLEditor"%self.fn)
+    def loadTranslate(self):
+        self.il8n=QtWidgets.QAction(QtGui.QIcon("icons/translate.ico"),"Translate",self)
+        self.il8n.setShortcut("Ctrl-Shift-I")
+        self.addAction(self.il8n)
+        def il8n():
+
+            all=il8nlib.getAllIL8N()
+            all2=[]
+            for i in all:
+                all2.append(i.getName())
+            choice_lang=QtWidgets.QInputDialog.getItem(self,i._("title"),"Choice a lang",all2)
+
+            index=all2.index(choice_lang)
+            print(choice_lang,index,all[index].path)
+            obj=configobj.ConfigObj("setting/il8n/il8n.ini",encoding="utf-8")
+            obj["default"]["default_lang"]=all[index].path
+            obj["default"]["is_use_sys_default"]="0"
+            obj.write()
+        self.bind(self.il8n,il8n)
+
 if __name__ == "__main__":
     app=QtWidgets.QApplication(argv)
     win=HTMLEditor()
