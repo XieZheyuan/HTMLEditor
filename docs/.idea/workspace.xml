@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c918d7d1-99d1-427c-84e6-dbd7cb9393ff" name="Default Changelist" comment="" />
+    <list default="true" id="c918d7d1-99d1-427c-84e6-dbd7cb9393ff" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,6 +35,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunManager">
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/docs/index.html" useBuiltInWebServerPort="true">
@@ -54,7 +57,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1585710545457</updated>
-      <workItem from="1585710548032" duration="3490000" />
+      <workItem from="1585710548032" duration="3940000" />
     </task>
     <servers />
   </component>
@@ -63,5 +66,11 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="420" y="269" key="FileChooserDialogImpl" timestamp="1585714489638">
+      <screen x="0" y="0" width="1280" height="1024" />
+    </state>
+    <state x="420" y="269" key="FileChooserDialogImpl/0.0.1280.1024@0.0.1280.1024" timestamp="1585714489638" />
   </component>
 </project>
