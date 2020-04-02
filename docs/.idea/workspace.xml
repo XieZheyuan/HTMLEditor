@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c918d7d1-99d1-427c-84e6-dbd7cb9393ff" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/index.jp.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.cn.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.cn.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,12 +38,16 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JavaScript Debug.index.cn.html">
+    <configuration name="index.cn.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63343/docs/index.cn.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/docs/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.index.cn.html" />
         <item itemvalue="JavaScript Debug.index.html" />
       </list>
     </recent_temporary>
@@ -60,7 +63,7 @@
       <option name="presentableId" value="Default" />
       <updated>1585710545457</updated>
       <workItem from="1585710548032" duration="3940000" />
-      <workItem from="1585808925324" duration="1624000" />
+      <workItem from="1585808925324" duration="2719000" />
     </task>
     <servers />
   </component>
