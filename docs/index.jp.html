@@ -10,6 +10,34 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
+    <script>
+        function choice() {
+            var index=document.getElementById("AreaId").selectedIndex;//获取当前选择项的索引.
+            document.getElementById("AreaId").options[index].text;//获取当前选择项的文本.
+
+            document.getElementById("AreaId").options[index].innerHTML;//获取当前选择项的文本.
+
+            var obj=document.getElementById("AreaId");
+            for(i=0;i<obj.length;i++) {//下拉框的长度就是它的选项数.
+
+                if(obj[i].selected === true) {
+
+                    var text=obj[i].text;//获取当前选择项的文本.
+
+                }
+
+            }
+            if( text === "English"){
+                window.location="https://xiezheyuan.github.io/HTMLEditor/index.html"
+            }
+            if( text === "Chinese"){
+                window.location="https://xiezheyuan.github.io/HTMLEditor/index.cn.html"
+            }
+            if( text === "Japanese"){
+                window.location="https://xiezheyuan.github.io/HTMLEditor/index.jp.html"
+            }
+        }
+    </script>
 </head>
 <body class="is-preload">
 
